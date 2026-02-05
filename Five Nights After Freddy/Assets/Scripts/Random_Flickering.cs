@@ -16,7 +16,7 @@ public class Random_Flickering : MonoBehaviour
     }
 
     // Light flickering
-    private void Flicker_regular()
+    private void Flicker()
     {
         float randomIntensity = Random.Range(minIntensity, maxIntensity);
         light.intensity = randomIntensity;
