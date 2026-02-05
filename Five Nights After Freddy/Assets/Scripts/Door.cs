@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
-public class Security_door : MonoBehaviour, IInteractable
+public class Doors : MonoBehaviour, IInteractable
 {
-    public UnityEngine.Material material_red;
-    public UnityEngine.Material material_green;
     public GameObject door;
     public GameObject button;
 
@@ -29,39 +27,41 @@ public class Security_door : MonoBehaviour, IInteractable
 
     IEnumerator OpenDoor()
     {
-        button.GetComponent<MeshRenderer>().material = material_red;
         isOpen = true;
+        Quaternion startRot = door.transform.rotation;
+        Quaternion targetRot = startRot * Quaternion.Euler(0, 90, 0); // Pivote de 90° sur l'axe Y
         Vector3 startPos = door.transform.position;
-        Vector3 targetPos = startPos + new Vector3(0, 2, 0);
+        Vector3 targetPos = startPos + new Vector3(-0.5f, 0, -1);
 
         float elapsed = 0f;
         while (elapsed < 1f)
         {
             elapsed += Time.deltaTime * speed;
+            door.transform.rotation = Quaternion.Lerp(startRot, targetRot, elapsed);
             door.transform.position = Vector3.Lerp(startPos, targetPos, elapsed);
-            yield return null; // Attend la prochaine frame
+            yield return null;
         }
 
-        isOpen = true;
-        door.transform.position = targetPos;
+        door.transform.rotation = targetRot;
     }
 
     IEnumerator CloseDoor()
     {
-        button.GetComponent<MeshRenderer>().material = material_green;
-        isOpen = true;
+        Quaternion startRot = door.transform.rotation;
+        Quaternion targetRot = startRot * Quaternion.Euler(0, -90, 0); // Pivote de 90° sur l'axe Y
         Vector3 startPos = door.transform.position;
-        Vector3 targetPos = startPos - new Vector3(0, 2, 0);
+        Vector3 targetPos = startPos - new Vector3(0.5f, 0, 1);
 
         float elapsed = 0f;
         while (elapsed < 1f)
         {
             elapsed += Time.deltaTime * speed;
+            door.transform.rotation = Quaternion.Lerp(startRot, targetRot, elapsed);
             door.transform.position = Vector3.Lerp(startPos, targetPos, elapsed);
-            yield return null; // Attend la prochaine frame
+            yield return null;
         }
 
+        door.transform.rotation = targetRot;
         isOpen = false;
-        door.transform.position = targetPos;
     }
 }
